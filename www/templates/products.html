@@ -1,0 +1,15 @@
+<ion-view title="Products">
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left"class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-content class="has-header">
+	<ul class="list">
+		<li class="item item-checkbox" ng-repeat="category in categoriesProduct">
+				{{category.typeP}}
+				<label class="checkbox">
+					<input type="checkbox" ng-click="selectCategory(category)" ng-model="category.selected">
+				</label>
+		</li>
+	</ul>
+  </ion-content>
+</ion-view>
