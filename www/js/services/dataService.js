@@ -1,20 +1,33 @@
 angular.module('starter')
 
-.factory('dataService',['$http',function($http){
-	var localAPI = "http://localhost/PHP_API/server/";
+.factory('dataService',['$http','md5',function($http,md5){
+	var localAPI = "http://localhost/PHP_API_2/api.php?request=";
 	var remoteAPI = "http://discount-dublinshop.rhcloud.com/PHP_API/server/";
-	var baseURL = remoteAPI;
+	var baseURL = localAPI;
+	var userId = null;
 
 
 	return {
 
-		getCategories :function(category){
-			return $http.get(baseURL+'produit_api.php?action=getAllCategoriesMerchant');
+		setUserId: function(id){
+			this.userId = id;
+		},
+		getUserId: function(){
+			return this.userId;
 		},
 
-		getOffers :function(id,lat,lng){
-			return $http.post(baseURL+'produit_api.php?action=getOffers',
-				{'id':id, 'lat':lat, 'lng': lng});
+		getCategories :function(category){
+			return $http.get(baseURL+'cat_products');
+		},
+
+		getOffers :function(lat,lng){
+			return $http.get(baseURL+'offers',
+		    	{params:{'id':this.userId, 'lat':lat, 'lng': lng}});
+		},
+
+		login : function(loginInformation){
+			return $http.post(baseURL+'authentClient',
+		    	{'username':loginInformation.username, 'password':md5.createHash(loginInformation.password)});
 		}
 
 	}

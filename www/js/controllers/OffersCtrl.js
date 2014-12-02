@@ -1,6 +1,8 @@
 
 angular.module('starter.controllers')
-.controller('OffersCtrl',['$scope','dataService','ProductService', function($scope,dataService,ProductService) {
+.controller('OffersCtrl',['$scope','dataService','ProductService','GeolocationService',
+ function($scope,dataService,ProductService,GeolocationService) {
+
 	$scope.center = {};
 	$scope.markers = [];
 	$scope.position = {
@@ -31,12 +33,10 @@ angular.module('starter.controllers')
 		}
 		if($scope.distance(position.coords.latitude,position.coords.longitude, $scope.position.latitude,$scope.position.longitude) > 1){
 			$scope.$apply(function(){
-				$scope.position.distance  = $scope.distance(position.coords.latitude,position.coords.longitude, 53.339107899999995,-6.243373999999999);
 				$scope.position.latitude  = position.coords.latitude;
 				$scope.position.longitude = position.coords.longitude;
 				$scope.position.accuracy = position.coords.accuracy;
 			});	
-
 
 		  // add a marker in the given location, attach some popup content to it and open the popup
 			$scope.removeAllMarker();
@@ -48,7 +48,7 @@ angular.module('starter.controllers')
 
 		    $scope.preference = ProductService.getPreference() || [];
 
-			dataService.getOffers(1, position.coords.latitude, position.coords.longitude)
+			dataService.getOffers(position.coords.latitude, position.coords.longitude)
 			.success(function(data, status, headers, config){
 				var products = $scope.filter(data,function(offer){
 					var index = $scope.findIndex($scope.preference,function(cat){
@@ -68,9 +68,7 @@ angular.module('starter.controllers')
 			.error(function(data, status, headers, config){
 				console.log(data, status, headers, config);
 			});
-
 		}
-		
 	};
 
 	$scope.removeAllMarker = function(){
@@ -94,28 +92,6 @@ angular.module('starter.controllers')
 	    return d;//distance (meter)
 	},
 	 
-	$scope.errorCallback = function(error){
-	  switch(error.code){
-	    case error.PERMISSION_DENIED:
-	      alert("L'utilisateur n'a pas autorisé l'accès à sa position");
-	      break;      
-	    case error.POSITION_UNAVAILABLE:
-	      alert("L'emplacement de l'utilisateur n'a pas pu être déterminé");
-	      break;
-	    case error.TIMEOUT:
-	      alert("Le service n'a pas répondu à temps");
-	      break;
-	    }
-	},
-	 
-	$scope.stopWatch = function(){
-	  navigator.geolocation.clearWatch(watchId);
-	} 
+	GeolocationService.watch($scope.successCallback);
 
-	if (navigator.geolocation){
-	   var watchId = navigator.geolocation.watchPosition($scope.successCallback, $scope.errorCallback, {enableHighAccuracy:true,maximumAge:30000, timeout:27000});
-  	}else{
-	   alert("Votre navigateur ne prend pas en compte la géolocalisation HTML5");
-    }
 }]);
-

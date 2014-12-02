@@ -5,12 +5,11 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
-angular.module('starter', ['ionic', 'starter.controllers','angular-lodash'])
+angular.module('starter', ['ionic', 'starter.controllers','angular-lodash','angular-md5'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
+    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard for form inputs)
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
@@ -32,7 +31,14 @@ angular.module('starter', ['ionic', 'starter.controllers','angular-lodash'])
       templateUrl: "templates/menu.html",
       controller: 'AppCtrl'
     })
-
+    .state('app.error', {
+      url: "/error",
+      views: {
+        'menuContent' :{
+         
+        }
+      }
+    })
     .state('app.offers', {
       url: "/offers",
       views: {
@@ -42,6 +48,17 @@ angular.module('starter', ['ionic', 'starter.controllers','angular-lodash'])
         }
       }
     })
+    .state('app.login', {
+      url: "/login",
+      views: {
+        'menuContent' :{
+          templateUrl: "templates/login.html",
+          controller:'LoginCtrl'
+        }
+      }
+    })
+
+    
 
     .state('app.products', {
       url: "/products",
@@ -80,6 +97,7 @@ angular.module('starter', ['ionic', 'starter.controllers','angular-lodash'])
       }
     });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/offers');
+    $urlRouterProvider.otherwise('/app/offers');
+ 
 });
 
