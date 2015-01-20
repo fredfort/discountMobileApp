@@ -2,8 +2,9 @@ angular.module('starter')
 
 .factory('dataService',['$http','md5',function($http,md5){
 	var localAPI = "http://localhost/PHP_API_2/api.php?request=";
-	var remoteAPI = "http://discount-dublinshop.rhcloud.com/PHP_API/server/";
-	var baseURL = localAPI;
+	var remoteAPI = "http://discount-dublinshop.rhcloud.com/PHP_API_2/api.php?request=";
+	var nodeAPI = 'http://localhost:3000/';
+	var baseURL = nodeAPI;
 	var userId = null;
 
 
@@ -26,9 +27,12 @@ angular.module('starter')
 		},
 
 		login : function(loginInformation){
-			return $http.post(baseURL+'authentClient',
-		    	{'username':loginInformation.username, 'password':md5.createHash(loginInformation.password)});
-		}
+			return $http.post(baseURL+'users',
+		    	{'email':loginInformation.username, 'password':md5.createHash(loginInformation.password)});
+		},
+		registerFacebookUser: function(user){
+			console.log(user);
+		},
 
 	}
 

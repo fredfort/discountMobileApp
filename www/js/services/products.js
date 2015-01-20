@@ -15,6 +15,7 @@ angular.module('starter')
 			var index = _.findIndex(productsPreference,function(cat){
 				return category.id === cat.id;
 			});
+			debugger;
 			if(index > -1){
 				productsPreference.splice(index,1);
 			}

@@ -3,7 +3,7 @@ angular.module('starter').factory('sessionInjector',['$location',function($locat
 
     	request: function(config){
             if(localStorage.token){
-                config.headers['Authorization'] = 'Basic '+localStorage.token;
+                config.headers['x-access-token'] = localStorage.token;
             }
     		return config;
 

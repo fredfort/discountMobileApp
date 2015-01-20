@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
-angular.module('starter', ['ionic', 'starter.controllers','angular-lodash','angular-md5'])
+angular.module('starter', ['ionic', 'starter.controllers','angular-lodash','angular-md5','facebook'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -19,6 +19,14 @@ angular.module('starter', ['ionic', 'starter.controllers','angular-lodash','angu
     }
   });
 })
+  .config([
+    'FacebookProvider',
+    function(FacebookProvider) {
+     var myAppId = '754907324579701';
+     FacebookProvider.init(myAppId);
+     
+    }
+  ])
 
 .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
   
@@ -97,7 +105,11 @@ angular.module('starter', ['ionic', 'starter.controllers','angular-lodash','angu
       }
     });
   // if none of the above states are matched, use this as the fallback
+  if(localStorage.token && localStorage.token !== null){
     $urlRouterProvider.otherwise('/app/offers');
+  }else{
+    $urlRouterProvider.otherwise('/app/login');
+  }
  
 });
 
