@@ -9,6 +9,8 @@
   "dependencies": {
     "angular-leaflet-directive": "~0.7.9",
     "restangular": "~1.4.0",
-    "angular-lodash": "~0.1.2"
+    "angular-lodash": "~0.1.2",
+    "angularjs-toaster": "~0.4.10",
+    "toaster": "~0.4.12"
   }
 }

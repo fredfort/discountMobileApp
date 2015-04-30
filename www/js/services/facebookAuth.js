@@ -1,5 +1,5 @@
-angular.module('starter').factory('FacebookAuth',['Facebook','dataService','$state','$location',
-	function(Facebook,dataService,$state,$location){
+angular.module('starter').factory('FacebookAuth',['Facebook','dataService','$state','$location','toaster',
+	function(Facebook,dataService,$state,$location,toaster){
 
 	var user = {};
 
@@ -7,28 +7,32 @@ angular.module('starter').factory('FacebookAuth',['Facebook','dataService','$sta
 
 		me: function(){
 		  Facebook.api('/me', function(response) {
-              this.user = response;
-              dataService.registerFacebookUser(this.user);
-              $state.go('app.products');
-          });
-        },
+        this.user = response;
+        localStorage.facebook_id = this.user.id;
+        dataService.registerFacebookUser(this.user).success(function(data, status, headers, config){
+        	dataService.setUser(data.user);
+          $state.go('app.products');
+      	}).error(function(data, status, headers, config){
+  				toaster.pop('error',data);
+    		});
+      });
+    },
 
 		intendLogin:function(){
 			var t = this;
 
 			Facebook.getLoginStatus(function(response) {
-				console.log(response);
 				if(response.authResponse && response.authResponse.accessToken){
 					localStorage.token = response.authResponse.accessToken;
 				}
-	            if (response.status == 'connected') {
-	              	t.me();
-	            }else{
-	              t.login();
-	            }
-	        },function(error){
-	        	debugger;
-	        });
+        if (response.status == 'connected') {
+          	t.me();
+        }else{
+          t.login();
+        }
+	    },function(error){
+	    	toaster.pop('error',error);
+	    });
 		},
 
 		login:function(){

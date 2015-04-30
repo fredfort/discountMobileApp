@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
-angular.module('starter', ['ionic', 'starter.controllers','angular-lodash','angular-md5','facebook'])
+angular.module('starter', ['ionic', 'starter.controllers','angular-lodash','angular-md5','facebook','toaster'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -22,7 +22,8 @@ angular.module('starter', ['ionic', 'starter.controllers','angular-lodash','angu
   .config([
     'FacebookProvider',
     function(FacebookProvider) {
-     var myAppId = '754907324579701';
+     //var myAppId = '754907324579701';
+     var myAppId = '793563737380726';
      FacebookProvider.init(myAppId);
      
     }
@@ -39,70 +40,28 @@ angular.module('starter', ['ionic', 'starter.controllers','angular-lodash','angu
       templateUrl: "templates/menu.html",
       controller: 'AppCtrl'
     })
-    .state('app.error', {
-      url: "/error",
-      views: {
-        'menuContent' :{
-         
-        }
-      }
+    .state('app.login', {
+      url: "/login",
+      templateUrl: "templates/login.html",
+      controller:'LoginCtrl'
     })
     .state('app.offers', {
       url: "/offers",
-      views: {
-        'menuContent' :{
-          templateUrl: "templates/offers.html",
-          controller:'OffersCtrl'
-        }
-      }
+      templateUrl: "templates/offers.html",
+      controller:'OffersCtrl'
     })
-    .state('app.login', {
-      url: "/login",
-      views: {
-        'menuContent' :{
-          templateUrl: "templates/login.html",
-          controller:'LoginCtrl'
-        }
-      }
-    })
-
-    
-
     .state('app.products', {
       url: "/products",
-      views: {
-        'menuContent' :{
-          templateUrl: "templates/products.html",
-           controller:'ProductsCtrl'
-        }
-      }
+      templateUrl: "templates/products.html",
+      controller:'ProductsCtrl'
     })
-     .state('app.contact', {
+    .state('app.contact', {
       url: "/contact",
-      views: {
-        'menuContent' :{
-          templateUrl: "templates/contact.html"
-        }
-      }
+      templateUrl: "templates/contact.html"
     })
-    .state('app.playlists', {
-      url: "/playlists",
-      views: {
-        'menuContent' :{
-          templateUrl: "templates/playlists.html",
-          controller: 'PlaylistsCtrl'
-        }
-      }
-    })
-
-    .state('app.single', {
-      url: "/playlists/:playlistId",
-      views: {
-        'menuContent' :{
-          templateUrl: "templates/playlist.html",
-          controller: 'PlaylistCtrl'
-        }
-      }
+    .state('app.error', {
+      url: "/error",
+      template:'error'
     });
   // if none of the above states are matched, use this as the fallback
   if(localStorage.token && localStorage.token !== null){

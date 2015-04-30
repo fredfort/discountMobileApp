@@ -1,7 +1,7 @@
 
 angular.module('starter.controllers')
-.controller('OffersCtrl',['$scope','dataService','ProductService','GeolocationService',
- function($scope,dataService,ProductService,GeolocationService) {
+.controller('OffersCtrl',['$scope','dataService','ProductService','GeolocationService','toaster',
+ function($scope,dataService,ProductService,GeolocationService,toaster) {
 
 	$scope.center = {};
 	$scope.markers = [];
@@ -25,6 +25,13 @@ angular.module('starter.controllers')
 	});
 	$scope.redIcon = new RedIcon();
 
+
+	$scope.preference = ProductService.getPreference() || [];
+
+	var categorieIds = _.map($scope.preference, function(category){
+		return category._id
+	});
+
 	$scope.successCallback = function(position){
 		if($scope.position.latitude === 0){
 			if($scope.position.latitude === 0){
@@ -46,28 +53,23 @@ angular.module('starter.controllers')
 			$scope.myself = L.marker([$scope.position.latitude, $scope.position.longitude],{icon:$scope.redIcon}).addTo($scope.map)
 		    .bindPopup('Me');
 
-		    $scope.preference = ProductService.getPreference() || [];
-
-			dataService.getOffers(position.coords.latitude, position.coords.longitude)
-			.success(function(data, status, headers, config){
-				var products = $scope.filter(data,function(offer){
-					var index = $scope.findIndex($scope.preference,function(cat){
-						return cat.typeP === offer.typeP;
-					});
-					if(index > -1 ){
-						return true;
-					}
+		    if(categorieIds.length >0){
+				dataService.getOffers(position.coords.latitude, position.coords.longitude,categorieIds)
+				.success(function(merchants, status, headers, config){
+					$scope.products = [];
+				    angular.forEach(merchants,function(merchant){
+				    	$scope.products = $scope.products.concat(merchant.products);
+				    	var lat = parseFloat(merchant.latitude);
+				    	var lng = parseFloat(merchant.longitude)
+				    	$scope.marker = L.marker([lat,lng]).addTo($scope.map).bindPopup(merchant.name);
+			    	});					
+				 })
+				.error(function(data, status, headers, config){
+					console.log(data, status, headers, config);
 				});
-				$scope.products = products;
-			    angular.forEach(products,function(product){
-			    	var lat = parseFloat(product.latitude);
-			    	var lng = parseFloat(product.longitude)
-			    	$scope.marker = L.marker([lat,lng]).addTo($scope.map).bindPopup(product.merchantName);
-		    	});					
-			 })
-			.error(function(data, status, headers, config){
-				console.log(data, status, headers, config);
-			});
+			}else{
+				toaster.pop('info','You haven\'t selected any products! Please go back to product and pick at least one of them');
+			}
 		}
 	};
 

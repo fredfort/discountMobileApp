@@ -1,22 +1,28 @@
-angular.module('starter').factory('sessionInjector',['$location',function($location) {
+angular.module('starter').factory('sessionInjector',['$injector','$q',function($injector,$q) {
     var sessionInjector = {
 
     	request: function(config){
-            if(localStorage.token){
-                config.headers['x-access-token'] = localStorage.token;
-            }
+        if(localStorage.token){
+          config.headers['x-access-token'] = localStorage.token;
+        }
+        if(localStorage.facebook_id){
+          config.headers['x-access-id'] = localStorage.facebook_id;
+        }
     		return config;
 
     	},
         response: function(config) {
-            return config;
+          return config;
         },
         responseError: function(rejection){
-            if(rejection.status === 403){
-                $location.path('/app/login');
-                localStorage.removeItem('token');
-            }
-             return rejection;
+          debugger;
+          if(rejection.status === 403 || rejection.status === 401){
+            $injector.invoke(function($state){
+              $state.go('app.login');
+            });
+            localStorage.removeItem('token');
+          }
+          return $q.reject(rejection);
         }
     };
     return sessionInjector;

@@ -1,7 +1,7 @@
 
 angular.module('starter.controllers')
-.controller('LoginCtrl',['$scope','$state','$timeout','Facebook','FacebookAuth','dataService', 
-  function($scope,$state, $timeout,Facebook, FacebookAuth,dataService) {
+.controller('LoginCtrl',['$scope','$state','$timeout','Facebook','FacebookAuth','dataService', 'toaster',
+  function($scope,$state, $timeout,Facebook, FacebookAuth,dataService, toaster) {
 
 
   if(localStorage.token && localStorage.token !== null){
@@ -12,16 +12,33 @@ angular.module('starter.controllers')
   $scope.doLogin = function() {
     dataService.login($scope.loginData).success(function(data, status, headers, config){
     	if(data.token){
-        dataService.setUserId(data.id);
+        dataService.setUser(data.user);
+        $scope.user.data = data.user;
+        localStorage.token = data.token;
     		$state.go('app.products');
-    		localStorage.token = data.token;
     	}else{
     		alert("wrong login/password");
     	}
    	}).error(function(data, status, headers, config){
-
+      toaster.pop('error',data);
    	});
   };
+
+
+  $scope.signUp = function(){
+    dataService.signUp($scope.loginData).success(function(data, status, headers, config){
+      if(data.token){
+        dataService.setUser(data.user);
+        $scope.user.data = data.user;
+        localStorage.token = data.token;
+        $state.go('app.products');
+      }else{
+        alert("something wrong happened");
+      }
+    }).error(function(data, status, headers, config){
+         toaster.pop('error',data);
+    });
+  }
     
   /**
    * Watch for Facebook to be ready.
@@ -40,8 +57,6 @@ angular.module('starter.controllers')
   $scope.IntentLogin = function(){
     FacebookAuth.intendLogin();
   };
-
-  
 
 
 
