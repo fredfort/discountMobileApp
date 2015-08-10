@@ -53,7 +53,6 @@ angular.module('starter.controllers')
 			$scope.myself = L.marker([$scope.position.latitude, $scope.position.longitude],{icon:$scope.redIcon}).addTo($scope.map)
 		    .bindPopup('Me');
 
-		    if(categorieIds.length >0){
 				dataService.getOffers(position.coords.latitude, position.coords.longitude,categorieIds)
 				.success(function(merchants, status, headers, config){
 					$scope.products = [];
@@ -67,9 +66,7 @@ angular.module('starter.controllers')
 				.error(function(data, status, headers, config){
 					console.log(data, status, headers, config);
 				});
-			}else{
-				toaster.pop('info','You haven\'t selected any products! Please go back to product and pick at least one of them');
-			}
+			
 		}
 	};
 
@@ -92,8 +89,19 @@ angular.module('starter.controllers')
 	    var lon_b = $scope.convertRad(lon_b_degre);
 	    var d = R * (Math.PI/2 - Math.asin( Math.sin(lat_b) * Math.sin(lat_a) + Math.cos(lon_b - lon_a) * Math.cos(lat_b) * Math.cos(lat_a)))
 	    return d;//distance (meter)
-	},
+	};
 	 
-	GeolocationService.watch($scope.successCallback);
+	if(categorieIds.length >0){
+		$scope.unwatch = GeolocationService.watch($scope.successCallback);
+	}else{
+		if($scope.unwatch){
+			$scope.unwatch();
+		}
+		toaster.pop('info','You haven\'t selected any products! Please go back to product and pick at least one of them');
+	}
+
+	$scope.$on('$locationChangeStart', function(){
+		GeolocationService.stopWatch();
+	});
 
 }]);

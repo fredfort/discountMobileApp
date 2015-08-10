@@ -8,14 +8,24 @@
      
      <br />
      <div class="list" ng-repeat="product in products">
-    	<div class="item item-divider">
-    		{{product.name}}
-    	</div>
-    	<div  class="item" href="#">
-    		    Name:     {{product.name}}<br>
-            Desc:     {{product.description}}<br>
-            Qte:      {{product.quantity}}
-    	</div>
-      </div> 
+      	<div class="item item-divider">
+      		{{product.name}}
+      	</div>
+      	<div  class="item" href="#">
+      		    Name:     {{product.name}}<br>
+              Desc:     {{product.description}}<br>
+              Qte:      {{product.quantity}}
+      	</div>
+      </div>
+      <div ng-show="!products  || products.length === 0" class="text-center">
+        <p>
+         None of our offer match your position and/or your products preference, keep walking or update your product preference.
+        </p>
+        <p>
+          <a class="button button-positive" ui-sref="app.products">
+           Update my product preference
+          </a>
+        </p>
+      </div>
   </ion-content>
 </ion-view>

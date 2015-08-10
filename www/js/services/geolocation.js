@@ -10,6 +10,7 @@ angular.module('starter')
 			if (navigator.geolocation){
 	  			 this.watchId = navigator.geolocation.watchPosition(callback, this.errorCallback, 
 	  			 							{enableHighAccuracy:true,maximumAge:30000, timeout:27000});
+	  			 return this.watchId;
 		  	}else{
 			   alert("Votre navigateur ne prend pas en compte la géolocalisation HTML5");
 		    }

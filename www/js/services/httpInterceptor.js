@@ -15,7 +15,6 @@ angular.module('starter').factory('sessionInjector',['$injector','$q',function($
           return config;
         },
         responseError: function(rejection){
-          debugger;
           if(rejection.status === 403 || rejection.status === 401){
             $injector.invoke(function($state){
               $state.go('app.login');
